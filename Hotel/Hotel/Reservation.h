@@ -6,30 +6,27 @@ class Reservation
 {
 protected:
 	String type;
-	Visitor visitor;
-	int days;
-	int roomNumber;
-	int bedNumber;
+	String id;
+	size_t days;
+	size_t roomNumber;
+	size_t bedNumber;
 	double price;
 
 public:
 	Reservation();
-	Reservation(const String& type, int days, int roomNumber, int bedNumber);
+	Reservation(const String& type, size_t days, size_t roomNumber, size_t bedNumber, const String& id);
 
 	void setType(const String& type);
-	void setID(const String& id);
-	void setName(const String& name);
-	void setDays(int days);
-	void setRoomNumber(int roomNumber);
-	void setBedNumber(int bedNumber);
+	void setDays(size_t days);
+	void setRoomNumber(size_t roomNumber);
+	void setBedNumber(size_t bedNumber);
 	void setPrice(double price);
 
 	const String& getType() const;
 	const String& getID() const;
-	const String& getName() const;
-	int getDays() const;
-	int getRoomNumber() const;
-	int getBedNumber() const;
+	size_t getDays() const;
+	size_t getRoomNumber() const;
+	size_t getBedNumber() const;
 	double getPrice() const;
 
 	virtual void display() const = 0;
@@ -37,4 +34,8 @@ public:
 	virtual bool goToBar() const = 0;
 
 	virtual Reservation* clone() const = 0;
+
+	virtual void payForBar() = 0;
+	virtual void payForRestaurant() = 0;
+
 };

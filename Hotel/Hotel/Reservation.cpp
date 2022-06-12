@@ -9,7 +9,7 @@ Reservation::Reservation()
 	price = 0;
 }
 
-Reservation::Reservation(const String& type, int days, int roomNumber, int bedNumber)
+Reservation::Reservation(const String& type, size_t days, size_t roomNumber, size_t bedNumber, const String& id)
 {
 	this->type = type;
 	this->days = days;
@@ -22,27 +22,17 @@ void Reservation::setType(const String& type)
 	this->type = type;
 }
 
-void Reservation::setID(const String& id)
-{
-	this->visitor.setID(id);
-}
-
-void Reservation::setName(const String& name)
-{
-	this->visitor.setName(name);
-}
-
-void Reservation::setDays(int days)
+void Reservation::setDays(size_t days)
 {
 	this->days = days;
 }
 
-void Reservation::setRoomNumber(int roomNumber)
+void Reservation::setRoomNumber(size_t roomNumber)
 {
 	this->roomNumber = roomNumber;
 }
 
-void Reservation::setBedNumber(int bedNumber)
+void Reservation::setBedNumber(size_t bedNumber)
 {
 	this->bedNumber = bedNumber;
 }
@@ -59,25 +49,20 @@ const String& Reservation::getType() const
 
 const String& Reservation::getID() const
 {
-	return visitor.getID();
+	return id;
 }
 
-const String& Reservation::getName() const
-{
-	return visitor.getName();
-}
-
-int Reservation::getDays() const
+size_t Reservation::getDays() const
 {
 	return days;
 }
 
-int Reservation::getRoomNumber() const
+size_t Reservation::getRoomNumber() const
 {
 	return roomNumber;
 }
 
-int Reservation::getBedNumber() const
+size_t Reservation::getBedNumber() const
 {
 	return bedNumber;
 }

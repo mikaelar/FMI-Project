@@ -20,11 +20,6 @@ void Visitor::setName(const String& name)
 	this->name = name;
 }
 
-void Visitor::setReservation(const Reservation& reservation)
-{
-	this->reservation = reservation.clone();
-}
-
 const String& Visitor::getID() const
 {
 	return id;
@@ -35,7 +30,3 @@ const String& Visitor::getName() const
 	return name;
 }
 
-const Reservation* Visitor::getReservation() const
-{
-	return reservation;
-}

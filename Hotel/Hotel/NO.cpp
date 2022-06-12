@@ -1,6 +1,5 @@
 #include "NO.h"
 #include <iostream>
-#pragma warning (disable : 4996)
 
 NO::NO() :Reservation()
 {
@@ -8,12 +7,13 @@ NO::NO() :Reservation()
 	paidRestaurant = false;
 }
 
-NO::NO(const String& type, int days, int roomNumber, int bedNumber)
-	:Reservation(type, days, roomNumber, bedNumber) {}
+NO::NO(const String& type, size_t days, size_t roomNumber, size_t bedNumber, const String& id)
+	:Reservation(type, days, roomNumber, bedNumber, id) ,paidBar(false),
+	paidRestaurant(false){}
 
 void NO::display() const
 {
-	std::cout << "Ultra all inclusive reservation for " << days << " days in room " << roomNumber << " with " << bedNumber << " beds for " << price << "$." << std::endl;
+	std::cout << "Nights only reservation for " << days << " days in room " << roomNumber << " with " << bedNumber << " beds for " << bedNumber * days * 50 << "$." << std::endl;
 }
 
 bool NO::goToRestaurant() const
@@ -29,4 +29,15 @@ bool NO::goToBar() const
 Reservation* NO::clone() const
 {
 	return new NO(*this);
+}
+
+void NO::payForBar() 
+{
+	paidBar = true;
+	std::cout << "You succesfully paid for bar!" << std::endl;
+}
+void NO::payForRestaurant()
+{
+	paidRestaurant = true;
+	std::cout << "You succesfully paid for restaurant!" << std::endl;
 }

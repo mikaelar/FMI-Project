@@ -34,7 +34,6 @@ private:
 
 	size_t logCounter;
 	size_t lastVisitor;
-	size_t allVisitors;
 	size_t allReservations;
 
 public:
@@ -43,8 +42,14 @@ public:
 	Visitor getVisitor(size_t index) const;
 	Log getLog(size_t index)const;
 
+	void payToBar(size_t index);
+	void payToRestaurant(size_t index);
+
+	bool barStatus(size_t index) const;
+	bool restaurantStatus(size_t index)const;
+
 	void addVisitor(const char* id, const String& name);
-	void deleteVisitor(size_t index);
+	void deleteVisitor(const char* id);
 	void addReservation(const char* id, const String& type, size_t days, size_t room, size_t beds);
 	bool deleteReservation(size_t index);
 

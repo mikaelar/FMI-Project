@@ -11,7 +11,6 @@ Hotel::Hotel() : name(), address(), logs()
 	reservations = new Reservation * [capacity];
 	allReservations = 0;
 	lastVisitor = 0;
-	allVisitors = 0;
 }
 
 size_t Hotel::getLastVisitor() const
@@ -29,6 +28,26 @@ Log Hotel::getLog(size_t index) const
 	return logs[index];
 }
 
+bool Hotel::barStatus(size_t index) const
+{
+	return reservations[index]->goToBar();
+}
+
+bool Hotel::restaurantStatus(size_t index) const
+{
+	return reservations[index]->goToRestaurant();
+}
+
+void Hotel::payToBar(size_t index)
+{
+	reservations[index]->payForBar();
+}
+
+void Hotel::payToRestaurant(size_t index)
+{
+	reservations[index]->payForRestaurant();
+}
+
 size_t Hotel::getLogCounter() const
 {
 	return logCounter;
@@ -36,18 +55,22 @@ size_t Hotel::getLogCounter() const
 
 void Hotel::addVisitor(const char* id, const String& name)
 {
-	int index = 0;
-	int number = 0;
-	while (id[index] != '\0')
+	if (lastVisitor <= MAX_NUMBER_OF_VISITORS)
 	{
-		number *= 10;
-		number += (id[index++] - '0');
-	}
-	visitors[lastVisitor].setID(number);
-	visitors[lastVisitor].setName(name);
+		int index = 0;
+		int number = 0;
+		while (id[index] != '\0')
+		{
+			number *= 10;
+			number += (id[index++] - '0');
+		}
+		visitors[lastVisitor].setID(number);
+		visitors[lastVisitor].setName(name);
 
-	allVisitors++;
-	lastVisitor++;
+		lastVisitor++;
+	}
+	else
+		cout << "Hotel is full" << endl;
 }
 
 void Hotel::free()
@@ -96,10 +119,20 @@ Hotel::~Hotel()
 	free();
 }
 
-void Hotel::deleteVisitor(size_t index)
+void Hotel::deleteVisitor(const char* id)
 {
-	visitors[index].setID(nullptr);
-	visitors[index].setName("UNAVAILABLE");
+	String temp(id);
+	size_t index = 0;
+	for (size_t i = 0; i < lastVisitor; i++)
+	{
+		if (temp.compare(visitors[i].getID()))
+		{
+			index = i;
+			break;
+		}
+	}
+	visitors[index].setID(visitors[lastVisitor].getID());
+	visitors[index].setName(visitors[lastVisitor].getName());
 	lastVisitor--;
 }
 
@@ -129,14 +162,7 @@ void Hotel::addReservation(const char* id, const String& type, size_t days, size
 
 	if (type.compare("AI"))
 	{
-		AI a;
-		a.setID(id);
-		a.setName(visitors[current].getName());
-		a.setDays(days);
-		a.setRoomNumber(room);
-		a.setBedNumber(beds);
-
-		visitors[current].setReservation(a);
+		AI a(type, days, room, beds, id);
 
 		reservations[count++] = a.clone();
 		cout << "All inclusive reservation successfully added!" << endl;
@@ -144,14 +170,7 @@ void Hotel::addReservation(const char* id, const String& type, size_t days, size
 
 	if (type.compare("UAI"))
 	{
-		UAI b;
-		b.setID(id);
-		b.setName(visitors[current].getName());
-		b.setDays(days);
-		b.setRoomNumber(room);
-		b.setBedNumber(beds);
-
-		visitors[current].setReservation(b);
+		UAI b(type, days, room, beds, id);
 
 		reservations[count++] = b.clone();
 		cout << "Ultra all inclusive reservation successfully added!" << endl;
@@ -159,14 +178,7 @@ void Hotel::addReservation(const char* id, const String& type, size_t days, size
 
 	if (type.compare("NO"))
 	{
-		NO c;
-		c.setID(id);
-		c.setName(visitors[current].getName());
-		c.setDays(days);
-		c.setRoomNumber(room);
-		c.setBedNumber(beds);
-
-		visitors[current].setReservation(c);
+		NO c(type, days, room, beds, id);
 
 		reservations[count++] = c.clone();
 		cout << "Nights only reservation successfully added!" << endl;
@@ -175,23 +187,22 @@ void Hotel::addReservation(const char* id, const String& type, size_t days, size
 
 bool Hotel::deleteReservation(size_t index)
 {
-
 	size_t t = count;
 	if (index > t - 1)
 	{
 		std::cout << "There is no reservation number " << index << "!" << std::endl;
 		return false;
 	}
-	Reservation* temp;
-	temp = reservations[index];
+
+	delete reservations[index];
 	for (size_t i = index; i < count - 1; i++)
 	{
 		reservations[i] = reservations[i + 1];
 	}
-	reservations--;
-	delete temp;
+	count--;
 	std::cout << "Erased (" << index << ")" << std::endl;
 	return true;
+
 }
 
 void Hotel::listVisitors() const
@@ -210,26 +221,16 @@ void Hotel::listReservations() const
 
 void Hotel::listVisitorReservation(const char* id) const
 {
-	int index = 0;
-	int number = 0;
-	while (id[index] != '\0')
-	{
-		number *= 10;
-		number += (id[index++] - '0');
-	}
-
+	String temp(id);
+	cout << "reservations: " << endl;
 	int current = 0;
-	for (int i = 0; i < lastVisitor; i++)
+	for (int i = 0; i < count; i++)
 	{
-		if (number == visitors[i].getID())
+		if (reservations[i]->getID().compare(temp))
 		{
-			current = i;
-			break;
+			reservations[i]->display();
 		}
 	}
-
-	cout << "reservation: ";
-	visitors[current].getReservation();
 	std::cout<<std::endl;
 }
 
@@ -241,7 +242,7 @@ Hotel::Hotel(const String& name, const String& address)
 
 void Hotel::display() const
 {
-	cout << "  Name: " << name << endl << "  Address: " << address << endl << "  Number of visitors: " << allVisitors << endl;
+	cout << "  Name: " << name << endl << "  Address: " << address << endl << "  Number of visitors: " << lastVisitor << endl;
 }
 
 void Hotel::addLog(const String& data)
@@ -253,7 +254,12 @@ void Hotel::addLog(const String& data)
 void Hotel::exportVisitors(const char* file) {
 	ofstream output(file);
 
-	for (int i = 0; i < logCounter; i++)
-		output << logs[i].getData() << endl;
+	for (int i = 0; i < lastVisitor; i++)
+		output <<"Name: "<< visitors[i].getName()<<" ID: "<< visitors[i].getID() << endl;
+	for (int i = 0; i < count; i++)
+	{
+		String temp(reservations[i]->getID());
+		output << "ID of reservation: " << temp.c_str() << " Type: " << reservations[i]->getType() << " Days: " << reservations[i]->getDays() << " Room: " << reservations[i]->getRoomNumber() << endl;
+	}
 	output.close();
 }

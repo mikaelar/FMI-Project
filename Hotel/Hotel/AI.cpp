@@ -1,18 +1,19 @@
 #include "AI.h"
 #include <iostream>
-#pragma warning (disable : 4996)
 
 AI::AI() :Reservation()
 {
 	paidBar = false;
 }
 
-AI::AI(const String& type, int days, int roomNumber, int bedNumber)
-	: Reservation(type, days, roomNumber, bedNumber) {}
+AI::AI(const String& type, size_t days, size_t roomNumber, size_t bedNumber, const String& id)
+	: Reservation(type, days, roomNumber, bedNumber, id) {
+	paidBar = false;
+}
 
 void AI::display() const
 {
-	std::cout << "All inclusive reservation for " << days << " days in room " << roomNumber << " with " << bedNumber << " beds for " << price << "$." << std::endl;
+	std::cout << "All inclusive reservation for " << days << " days in room " << roomNumber << " with " << bedNumber << " beds for " << bedNumber*days*100 << "$." << std::endl;
 }
 
 bool AI::goToRestaurant() const
@@ -25,13 +26,23 @@ bool AI::goToBar() const
 	return paidBar;
 }
 
-void AI::payToBar() const
+void AI::payToBar()
 {
-	//bool a = true;
-	//setPaidBar(a);
+	this->paidBar = true;
 }
 
 Reservation* AI::clone() const
 {
 	return new AI(*this);
+}
+
+void AI::payForRestaurant() 
+{
+	std::cout << "Restaurant is paid!" << std::endl;
+}
+
+void AI::payForBar()
+{
+	paidBar = true;
+	std::cout << "You succesfully paid for bar!" << std::endl;
 }

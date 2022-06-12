@@ -9,11 +9,14 @@ private:
 
 public:
 	NO();
-	NO(const String& type, int days, int roomNumber, int bedNumber);
+	NO(const String& type, size_t days, size_t roomNumber, size_t bedNumber, const String& id);
 
 	void display() const override;
 	bool goToRestaurant() const override;
 	bool goToBar() const override;
 
 	Reservation* clone() const override;
+
+	void payForBar() override;
+	void payForRestaurant() override;
 };
