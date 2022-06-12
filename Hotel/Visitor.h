@@ -1,6 +1,0 @@
-#pragma once
-
-class Visitor
-{
-
-};
